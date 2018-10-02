@@ -1,0 +1,29 @@
+{
+    "name": "react-lol-backend",
+    "version": "0.0.1",
+    "description": "",
+    "main": "app.js",
+    "repository": "https://github.com/mgarnier11/react-lol-backend",
+    "scripts": {
+        "start": "node ./app.js euw",
+        "test": "echo \"No test specified\" && exit 0"
+    },
+    "keywords": [],
+    "author": "mgarnier11",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.4",
+        "dotenv": "^6.0.0",
+        "express": "^4.16.3",
+        "image-downloader": "^3.4.1",
+        "kayn": "^0.8.22",
+        "mkdirp": "^0.5.1",
+        "mongodb": "^3.1.1",
+        "morgan": "^1.9.0",
+        "npm": "^6.4.1",
+        "roman-numerals": "^0.3.2",
+        "socket.io": "^2.1.1",
+        "socket.io-client": "^2.1.1",
+        "sync-request": "^6.0.0"
+    }
+}
