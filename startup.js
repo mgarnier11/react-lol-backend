@@ -136,7 +136,7 @@ function loadQueues(callback) {
 
 
         /*
-        var queues = JSON.parse(syncRequest('GET', config.teemoggUrl + '/data/en_us/queues.json').getBody());
+        var queues = JSON.parse(syncRequest('GET', config.teemoggUrl + '/data/en_US/queues.json').getBody());
         var queueList = [];
  
         Object.keys(queues).forEach((key, index) => {
@@ -178,7 +178,14 @@ function loadQueues(callback) {
 
 function loadMaps(callback) {
     return new Promise((resolve) => {
-        var mapList = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_us/map.json').getBody());
+        var maps = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/map.json').getBody()).data;
+
+        var mapList = [];
+        Object.keys(maps).forEach((key, index) => {
+            maps[key].id = key;
+            mapList.push(maps[key]);
+        });
+
         myForEach(mapList, async (map, index, mapList, next) => {
             map.id = parseInt(map.id);
 
@@ -200,7 +207,14 @@ function loadMaps(callback) {
 
 function loadSummonerSpells(callback) {
     return new Promise((resolve) => {
-        var summonerSpellList = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_us/summoner.json').getBody());
+        var summonerSpells = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/summoner.json').getBody()).data;
+
+        var summonerSpellList = [];
+        Object.keys(summonerSpells).forEach((key, index) => {
+            summonerSpells[key].id = key;
+            summonerSpellList.push(summonerSpells[key]);
+        });
+
         myForEach(summonerSpellList, async (summonerSpell, index, summonerSpellList, next) => {
             summonerSpell.id = parseInt(summonerSpell.id);
             try {
@@ -221,7 +235,14 @@ function loadSummonerSpells(callback) {
 
 function loadRunes(callback) {
     return new Promise((resolve) => {
-        var runeList = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/runesReforged.json').getBody());
+        var runes = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/runesReforged.json').getBody());
+
+        var runeList = [];
+        Object.keys(runes).forEach((key, index) => {
+            runes[key].id = key;
+            runeList.push(runes[key]);
+        });
+
         myForEach(runeList, async (rune, index, runeList, next) => {
             rune.id = parseInt(rune.id);
 
@@ -246,7 +267,9 @@ function loadRunes(callback) {
 
 function loadIcons(callback) {
     return new Promise(async (resolve) => {
-        var icons = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_us/profileicon.json').getBody());
+        var icons = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/profileicon.json').getBody()).data;
+
+        icons = Object.values(icons);
 
         mkdirp('public/summoners/icons/', (err, made) => {
             if (err)
@@ -258,10 +281,10 @@ function loadIcons(callback) {
         for (var i = 0; i <= icons.length; i = i + 4) {
 
             await Promise.all([
-                (icons[i] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i].id + '.jpg', 'public/summoners/icons/' + icons[i].id + '.jpg') : null),
-                (icons[i + 1] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i + 1].id + '.jpg', 'public/summoners/icons/' + icons[i + 1].id + '.jpg') : null),
-                (icons[i + 2] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i + 2].id + '.jpg', 'public/summoners/icons/' + icons[i + 2].id + '.jpg') : null),
-                (icons[i + 3] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i + 3].id + '.jpg', 'public/summoners/icons/' + icons[i + 3].id + '.jpg') : null)
+                (icons[i] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i].id + '.png', 'public/summoners/icons/' + icons[i].id + '.jpg') : null),
+                (icons[i + 1] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i + 1].id + '.png', 'public/summoners/icons/' + icons[i + 1].id + '.jpg') : null),
+                (icons[i + 2] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i + 2].id + '.png', 'public/summoners/icons/' + icons[i + 2].id + '.jpg') : null),
+                (icons[i + 3] ? downloadChecked(config.ddUrl + '/img/profileicon/' + icons[i + 3].id + '.png', 'public/summoners/icons/' + icons[i + 3].id + '.jpg') : null)
             ]).then(values => {
                 values.forEach((value, j) => {
                     if (value) console.log('Icon ' + (i + j) + ' downloaded');
@@ -281,7 +304,7 @@ function startup2(callback) {
             loadQueues(),
             loadMaps(),
             loadSummonerSpells(),
-            loadRunes(),
+            //loadRunes(),
             loadIcons()
         ]).then(values => {
             values.forEach(value => console.log(value));
