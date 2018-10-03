@@ -5,6 +5,9 @@ var config = require('./config.js');
 var { LRUCache, BasicJSCache, METHOD_NAMES, REGIONS } = require('kayn');
 
 function init(region) {
+    if (!region) {
+        region = 'euw';
+    }
     config.server = Object.values(config.servers).find(server => { return server.region == region });
 
     config.kaynConfig.region = config.server.region;
@@ -37,8 +40,8 @@ function init(region) {
 
     config.realms = JSON.parse(syncRequest('GET', 'https://ddragon.leagueoflegends.com/realms/' + config.server.region + '.json').getBody());
     config.ddUrl = config.realms.cdn + '/' + config.realms.v;
-    var teemoggVersion = JSON.parse(syncRequest('GET', 'https://mushroom.teemo.gg/latest.txt').getBody());
-    config.teemoggUrl = 'https://mushroom.teemo.gg/' + teemoggVersion;
+    //var teemoggVersion = JSON.parse(syncRequest('GET', 'https://mushroom.teemo.gg/latest.txt').getBody());
+    //config.teemoggUrl = 'https://mushroom.teemo.gg/' + teemoggVersion;
     config.dbName = config.dbName + '-' + config.server.region;
 
     global.config = config;

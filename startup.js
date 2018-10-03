@@ -3,6 +3,7 @@ var syncRequest = require('sync-request');
 var mkdirp = require('mkdirp');
 var imageDownloader = require('image-downloader');
 var fs = require('fs');
+var cheerio = require('cheerio');
 
 
 var championDao = require('./dao/ChampionDao');
@@ -93,7 +94,7 @@ function loadChampions(callback) {
                 console.log(error);
             }
 
-            await downloadChecked(config.realms.cdn + '/' + config.realms.v + config.championImagesConfig.icons + champion.id + '.png', 'public' + champion.icon);
+            await downloadChecked(config.ddUrl + config.championImagesConfig.icons + champion.id + '.png', 'public' + champion.icon);
             await asyncForEach(champion.skins, (skin) => {
                 downloadChecked(config.realms.cdn + config.championImagesConfig.skinsLoading + champion.id + '_' + skin.num + '.jpg', 'public' + skin.loading);
                 downloadChecked(config.realms.cdn + config.championImagesConfig.skinsSplash + champion.id + '_' + skin.num + '.jpg', 'public' + skin.splash);
@@ -108,16 +109,41 @@ function loadChampions(callback) {
     })
 }
 
+function getQueues() {
+    var html = syncRequest('GET', 'https://developer.riotgames.com/game-constants.html').getBody().toString();
+    var $ = cheerio.load(html);
+    var table = $('.span12 a[name=matchmaking-queues]').next().next().next();
+    var keys = [];
+    table.find('thead tr th').each((i, elem) => {
+        keys.push($(elem).html().toLowerCase());
+    });
+
+    var queues = [];
+    table.find('tbody tr').each((i, tr) => {
+        var queue = {};
+        $(tr).find('td').each((i, td) => {
+            queue[keys[i]] = $(td).text();
+        })
+        queues.push(queue);
+    });
+    return queues;
+
+}
+
 function loadQueues(callback) {
     return new Promise((resolve) => {
+        var queueList = getQueues();
+
+
+        /*
         var queues = JSON.parse(syncRequest('GET', config.teemoggUrl + '/data/en_us/queues.json').getBody());
         var queueList = [];
-
+ 
         Object.keys(queues).forEach((key, index) => {
             queues[key].id = key;
             queueList.push(queues[key]);
         });
-
+*/
         myForEach(queueList, async (queue, index, queueList, next) => {
             queue.id = parseInt(queue.id);
             if (queue.id == 420) {
