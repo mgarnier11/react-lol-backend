@@ -12,7 +12,7 @@ var startup = require('./startup');
 
 console.time('startup');
 
-init(process.argv[2]);
+init();
 
 var kayn = Kayn(process.env.LEAGUE_API_KEY)(config.kaynConfig);
 global.kayn = kayn;
@@ -69,12 +69,12 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
     })
 
     app.use('/', (req, res) => {
-        res.send(config.server.region + ' backend is listenning');
+        res.send(config.region + ' backend is listenning');
     })
 
-    var server = app.listen(config.server.port, () => {
+    var server = app.listen((process.env.PORT ? process.env.PORT : 3000), () => {
         console.timeEnd('startup');
-        console.log(config.server.region + ' backend is listenning on port ' + config.server.port);
+        console.log(config.region + ' backend is listenning on port ' + process.env.PORT);
     });
 
     io = socketio.listen(server);

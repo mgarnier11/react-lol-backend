@@ -1,19 +1,5 @@
 var config = {
-    hostname: "localhost",
-    frontEndPort: 80,
-    servers: {
-        BR: { region: 'br', port: 3001 },
-        EUNE: { region: 'eune', port: 3002 },
-        EUW: { region: 'euw', port: 3003 },
-        KR: { region: 'kr', port: 3004 },
-        LAN: { region: 'lan', port: 3005 },
-        LAS: { region: 'las', port: 3006 },
-        NA: { region: 'na', port: 3007 },
-        OCE: { region: 'oce', port: 3008 },
-        RU: { region: 'ru', port: 3009 },
-        TR: { region: 'tr', port: 3010 },
-        JP: { region: 'jp', port: 3011 },
-    },
+    region: 'euw',
     tiers: {
         "BRONZE": 0,
         "SILVER": 500,
