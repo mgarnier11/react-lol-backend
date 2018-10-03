@@ -46,8 +46,6 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
 
     global.champions = await championService.findAllChampions();
 
-    await startup();
-
     var app = express();
 
     app.use(cors({ credentials: true, origin: true }));
@@ -76,6 +74,8 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
         console.timeEnd('startup');
         console.log(config.region + ' backend is listenning on port ' + process.env.PORT);
     });
+
+    await startup();
 
     io = socketio.listen(server);
 
