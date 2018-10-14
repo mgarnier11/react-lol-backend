@@ -1,5 +1,5 @@
 var config = {
-    region: 'euw',
+    region: 'na',
     tiers: {
         "BRONZE": 0,
         "SILVER": 500,
@@ -37,7 +37,6 @@ var config = {
         icons: '/img/champion/'
     },
     kaynConfig: {
-        region: "euw",
         debugOptions: {
             isEnabled: true,
             showKey: false
