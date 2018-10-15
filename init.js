@@ -32,9 +32,12 @@ function init() {
             }
         }
     }
-
-    config.realms = JSON.parse(syncRequest('GET', 'https://ddragon.leagueoflegends.com/realms/' + config.region + '.json').getBody());
-    config.ddUrl = config.realms.cdn + '/' + config.realms.v;
+    try {
+        config.realms = JSON.parse(syncRequest('GET', 'https://ddragon.leagueoflegends.com/realms/' + config.region + '.json').getBody());
+        config.ddUrl = config.realms.cdn + '/' + config.realms.v;
+    } catch (e) {
+        config.ddUrl = 'https://ddragon.leagueoflegends.com/cdn/8.20.1';
+    }
     config.dbName = config.dbName + '-' + config.region;
 
     global.config = config;

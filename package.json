@@ -5,7 +5,7 @@
     "main": "app.js",
     "repository": "https://github.com/mgarnier11/react-lol-backend",
     "scripts": {
-        "start": "node ./app.js euw",
+        "start": "node ./app.js",
         "test": "echo \"No test specified\" && exit 0"
     },
     "keywords": [],

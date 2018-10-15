@@ -14,7 +14,9 @@ console.time('startup');
 
 init();
 
-var kayn = Kayn(process.env.LEAGUE_API_KEY)(config.kaynConfig);
+const key = (process.env.LEAGUE_API_KEY ? process.env.LEAGUE_API_KEY : '1234');
+
+var kayn = Kayn(key)(config.kaynConfig);
 global.kayn = kayn;
 
 var championController = require('./controllers/ChampionController');
@@ -44,8 +46,6 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
     console.log('connected to db !');
     global.db = db.db(config.dbName);
 
-    global.champions = await championService.findAllChampions();
-
     var app = express();
 
     app.use(cors({ credentials: true, origin: true }));
@@ -63,19 +63,17 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
     app.use('/rune', runeController);
 
     app.use('/', (req, res) => {
-        res.send(configBase);
-    })
-
-    app.use('/', (req, res) => {
         res.send(config.region + ' backend is listenning');
     })
 
-    var server = app.listen((process.env.PORT ? process.env.PORT : 3000), () => {
+    var server = app.listen((process.env.PORT ? process.env.PORT : 80), (process.env.PORT ? '' : '127.0.0.2'), () => {
         console.timeEnd('startup');
         console.log(config.region + ' backend is listenning on port ' + process.env.PORT);
     });
 
     await startup();
+
+    global.champions = await championService.findAllChampions();
 
     io = socketio.listen(server);
 

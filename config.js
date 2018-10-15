@@ -1,5 +1,5 @@
 var config = {
-    region: 'na',
+    region: 'euw',
     tiers: {
         "BRONZE": 0,
         "SILVER": 500,
