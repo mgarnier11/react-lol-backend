@@ -5,7 +5,6 @@ var cors = require('cors');
 var socketio = require('socket.io');
 var MongoClient = require("mongodb").MongoClient;
 var { Kayn } = require('kayn');
-var configBase = require('./config.js');
 
 var init = require('./init');
 var startup = require('./startup');
@@ -52,7 +51,7 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
     app.use(logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    app.use(express.static(path.join(__dirname, '../public')));
+    app.use(express.static(path.join(__dirname, './public')));
 
     app.use('/champion', championController);
     app.use('/map', mapController);
@@ -62,11 +61,12 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
     app.use('/summonerSpell', summonerSpellController);
     app.use('/rune', runeController);
 
+
     app.use('/', (req, res) => {
         res.send(config.region + ' backend is listenning');
     })
 
-    var server = app.listen((process.env.PORT ? process.env.PORT : 80), (process.env.PORT ? '' : '127.0.0.2'), () => {
+    var server = app.listen((process.env.PORT ? process.env.PORT : 80), '127.0.0.2', () => {
         console.timeEnd('startup');
         console.log(config.region + ' backend is listenning on port ' + process.env.PORT);
     });

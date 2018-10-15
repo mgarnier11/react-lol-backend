@@ -8,9 +8,6 @@ var matchService = require('../services/MatchService');
 
 var toArabic = require('roman-numerals').toArabic;
 
-var leagueQueuesId = Object.values(config.leagueQueuesId);
-
-
 function SummonerSocketController(socket) {
     socket.on('getSummonerById', async (summonerId) => {
         try {
@@ -154,8 +151,8 @@ function SummonerSocketController(socket) {
             var summoner = socket.summoners[0];
             console.log('getting stats for ' + summoner.id);
 
-            for (var queueId of leagueQueuesId) {
-                query.queue = queueId;
+            for (var queue of config.mainQueues) {
+                query.queue = queue.id;
                 query.champion = summoner.championId;
                 try {
                     matchList = await matchService.findSummonerMatchList(summoner.accountId, query);

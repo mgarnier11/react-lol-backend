@@ -20,15 +20,22 @@ var config = {
         runes: "runes"
     },
     leagueSeasonId: 11,
-    leagueQueuesId: {
-        solo: 420,
-        flex5v5: 440,
-        flex3v3: 470
-    },
-    rankNames: [
-        "RANKED_SOLO_5x5",
-        "RANKED_FLEX_SR",
-        "RANKED_FLEX_TT"
+    mainQueues: [
+        {
+            name: 'solo',
+            named: "RANKED_SOLO_5x5",
+            id: 420
+        },
+        {
+            name: 'flex5v5',
+            named: "RANKED_FLEX_SR",
+            id: 440
+        },
+        {
+            name: 'flex3v3',
+            named: "RANKED_FLEX_TT",
+            id: 470
+        }
     ],
     nbGames: 10,
     championImagesConfig: {

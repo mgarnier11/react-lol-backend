@@ -5,6 +5,7 @@ var config = require('./config.js');
 var { LRUCache, BasicJSCache, METHOD_NAMES, REGIONS } = require('kayn');
 
 function init() {
+    config.region = (process.env.REGION ? process.env.REGION : 'euw');
     config.kaynConfig.region = config.region;
 
     var basicCache = new BasicJSCache();

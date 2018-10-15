@@ -2,8 +2,6 @@ var matchService = require('./MatchService');
 
 var summonerDao = require('../dao/SummonerDao');
 
-var leagueQueuesArray = Object.values(config.leagueQueuesId);
-
 var SummonerService = {
     createSummoner: (summoner) => {
         return new Promise(async (resolve, reject) => {

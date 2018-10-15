@@ -1,6 +1,4 @@
 var queueDao = require('../dao/QueueDao');
-var leagueQueuesId = Object.values(config.leagueQueuesId);
-
 
 var QueueService = {
     createQueue: (queue) => {
@@ -41,8 +39,8 @@ var QueueService = {
             try {
                 var queues = [];
 
-                for (var queueId of leagueQueuesId) {
-                    queues.push(await queueDao.findQueueById(queueId));
+                for (var queue of config.mainQueues) {
+                    queues.push(await queueDao.findQueueById(queue.id));
                 }
 
                 resolve(queues);
