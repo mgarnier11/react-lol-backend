@@ -66,7 +66,7 @@ MongoClient.connect((process.env.DB ? process.env.DB : 'mongodb://localhost:2701
         res.send(config.region + ' backend is listenning');
     })
 
-    var server = app.listen((process.env.PORT ? process.env.PORT : 80), '127.0.0.2', () => {
+    var server = app.listen((process.env.PORT ? process.env.PORT : 3000), () => {
         console.timeEnd('startup');
         console.log(config.region + ' backend is listenning on port ' + process.env.PORT);
     });
