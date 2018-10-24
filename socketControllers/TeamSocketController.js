@@ -10,7 +10,7 @@ function TeamSocketController(socket) {
             participants.forEach((participant) => {
                 if (participant.teamId != lastTeamId) {
                     teams.push(team);
-                    team = new { participants: [], queues: queues };
+                    team = { participants: [], queues: queues };
                 }
                 team.participants.push(participant);
                 lastTeamId = participant.teamId;
