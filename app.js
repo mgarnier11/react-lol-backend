@@ -7,7 +7,7 @@ var MongoClient = require("mongodb").MongoClient;
 var { Kayn } = require('kayn');
 
 var init = require('./init');
-var startup = require('./startup');
+var startup = require('./startupCDragon');
 
 console.time('startup');
 
