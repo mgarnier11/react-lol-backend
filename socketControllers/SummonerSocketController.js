@@ -164,7 +164,7 @@ function SummonerSocketController(socket) {
                         allMatches.push.apply(allMatches, data.matchDatas);
                     }
                 } catch (error) {
-                    console.log('matchList error : ' + error.error.error);
+                    console.log(error);
                 }
             }
 
