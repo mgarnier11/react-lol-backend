@@ -7,7 +7,7 @@ var MongoClient = require("mongodb").MongoClient;
 var { Kayn } = require('kayn');
 
 var init = require('./init');
-var startup = require('./startupCDragon');
+var startup = require('./startupDDragon');
 
 console.time('startup');
 
@@ -17,6 +17,9 @@ const key = (process.env.LEAGUE_API_KEY ? process.env.LEAGUE_API_KEY : '1234');
 
 var kayn = Kayn(key)(config.kaynConfig);
 global.kayn = kayn;
+
+
+
 
 var championController = require('./controllers/ChampionController');
 var mapController = require('./controllers/MapController');

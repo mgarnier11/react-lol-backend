@@ -109,30 +109,20 @@ function loadChampions(callback) {
     })
 }
 
-function getQueues() {
-    var html = syncRequest('GET', 'https://developer.riotgames.com/game-constants.html').getBody().toString();
-    var $ = cheerio.load(html);
-    var table = $('.span12 a[name=matchmaking-queues]').next().next().next();
-    var keys = [];
-    table.find('thead tr th').each((i, elem) => {
-        keys.push($(elem).html().toLowerCase());
-    });
-
-    var queues = [];
-    table.find('tbody tr').each((i, tr) => {
-        var queue = {};
-        $(tr).find('td').each((i, td) => {
-            queue[keys[i]] = $(td).text();
-        })
-        queues.push(queue);
-    });
-    return queues;
-
+function getQueuesJson() {
+    var queues = JSON.parse(syncRequest('GET', 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/en_gb/v1/queues.json').getBody());
+    var queueList = []
+    Object.keys(queues).forEach(queueId => {
+        var queue = queues[queueId];
+        queue.id = queueId;
+        queueList.push(queue);
+    })
+    return queueList
 }
 
 function loadQueues(callback) {
     return new Promise((resolve) => {
-        var queueList = getQueues();
+        var queueList = getQueuesJson();
 
         myForEach(queueList, async (queue, index, queueList, next) => {
             queue.id = parseInt(queue.id);
@@ -166,15 +156,15 @@ function loadQueues(callback) {
     });
 }
 
+function getMapsJson() {
+    var maps = JSON.parse(syncRequest('GET', 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/en_gb/v1/maps.json').getBody());
+
+    return maps;
+}
+
 function loadMaps(callback) {
     return new Promise((resolve) => {
-        var maps = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/map.json').getBody()).data;
-
-        var mapList = [];
-        Object.keys(maps).forEach((key, index) => {
-            maps[key].id = key;
-            mapList.push(maps[key]);
-        });
+        var mapList = getMapsJson();
 
         myForEach(mapList, async (map, index, mapList, next) => {
             map.id = parseInt(map.id);
@@ -195,14 +185,17 @@ function loadMaps(callback) {
     })
 }
 
+function getSummonerSpellsJson() {
+    var summonerSpells = JSON.parse(syncRequest('GET', 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/en_gb/v1/summoner-spells.json').getBody());
+
+    return summonerSpells
+}
+
 function loadSummonerSpells(callback) {
     return new Promise((resolve) => {
-        var summonerSpells = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/summoner.json').getBody()).data;
+        var summonerSpells = getSummonerSpellsJson();
 
         myForEach(Object.values(summonerSpells), async (summonerSpell, index, summonerSpellList, next) => {
-            var tmp = summonerSpell.id;
-            summonerSpell.id = parseInt(summonerSpell.key);
-            summonerSpell.key = tmp;
             try {
                 var result = await summonerSpellDao.upsertSummonerSpell(summonerSpell);
                 if (result.upsertedCount > 0) console.log('SummonerSpell : ' + summonerSpell.id + ' inserted to database');
@@ -219,18 +212,27 @@ function loadSummonerSpells(callback) {
     })
 }
 
+function getRunes() {
+    var runes = JSON.parse(syncRequest('GET', 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json').getBody());
+
+    return runes;
+}
+
 function loadRunes(callback) {
     return new Promise((resolve) => {
-        var runeTrees = JSON.parse(syncRequest('GET', config.ddUrl + '/data/en_US/runesReforged.json').getBody());
-        var runeList = [];
-
-        runeTrees.forEach((tree) => {
-            tree.slots.forEach((treeRunes) => {
-                treeRunes.runes.forEach((rune) => {
-                    runeList.push(rune);
+        /*
+                var runeList = [];
+        
+                runeTrees.forEach((tree) => {
+                    tree.slots.forEach((treeRunes) => {
+                        treeRunes.runes.forEach((rune) => {
+                            runeList.push(rune);
+                        })
+                    })
                 })
-            })
-        })
+        */
+
+        var runeList = getRunes();
 
         myForEach(runeList, async (rune, index, runeList, next) => {
             rune.id = parseInt(rune.id);
