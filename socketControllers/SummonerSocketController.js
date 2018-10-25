@@ -159,8 +159,8 @@ function SummonerSocketController(socket) {
 
                     if (matchList.matches.length > 0) {
                         var data = await summonerService.findSummonerStatsInMatches(summoner.id, matchList.matches);
-                        summoner[queueId] = data.stats;
-                        summoner[queueId].matchList = matchList.matches;
+                        summoner[queue.id] = data.stats;
+                        summoner[queue.id].matchList = matchList.matches;
                         allMatches.push.apply(allMatches, data.matchDatas);
                     }
                 } catch (error) {
