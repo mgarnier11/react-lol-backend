@@ -2,6 +2,9 @@ var matchService = require('./MatchService');
 
 var summonerDao = require('../dao/SummonerDao');
 
+const ProgressPromise = require('progress-promise');
+
+
 var SummonerService = {
     createSummoner: (summoner) => {
         return new Promise(async (resolve, reject) => {
@@ -56,7 +59,7 @@ var SummonerService = {
     },
 
     findSummonerStatsInMatches: (summonerId, matchList) => {
-        return new Promise(async (resolve, reject) => {
+        return new ProgressPromise(async (resolve, reject, progress) => {
             var matchDatas = [];
             var stats = {};
 
@@ -65,6 +68,7 @@ var SummonerService = {
             for (var match of matchList) {
                 var matchData = await matchService.findMatchById(match.gameId);
                 console.log('match ' + i++ + '/' + matchList.length);
+                progress(i * 100 / matchList.length);
                 if (matchData) matchDatas.push(matchData);
             }
 
@@ -74,6 +78,36 @@ var SummonerService = {
 
             resolve({ stats, matchDatas });
         });
+    },
+
+    findMatchList: (summonerId, query) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var summoner = await summonerDao.findSummonerById(summonerId);
+                if (!summoner) summoner = await kayn.Summoner.by.id(summonerId);
+                var dateToday = new Date();
+                if (!summoner[query.queue]) summoner[query.queue] = {};
+
+                if (!summoner[query.queue][query.champion]) summoner[query.queue][query.champion] = {};
+
+                if (summoner[query.queue][query.champion].matchList && summoner[query.queue][query.champion].matchListDate) {
+                    var timeDiff = Math.abs(dateToday.getTime() - summoner[query.queue][query.champion].matchListDate.getTime());
+                    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    if (diffDays > 1) {
+                        summoner[query.queue][query.champion].matchList = await matchService.findSummonerMatchList(summoner.accountId, query);
+                        summoner[query.queue][query.champion].matchListDate = dateToday;
+                        summonerDao.upsertSummoner(summoner);
+                    }
+                } else {
+                    summoner[query.queue][query.champion].matchList = await matchService.findSummonerMatchList(summoner.accountId, query);
+                    summoner[query.queue][query.champion].matchListDate = dateToday;
+                    summonerDao.upsertSummoner(summoner);
+                }
+                resolve(summoner[query.queue][query.champion].matchList);
+            } catch (error) {
+                reject(error);
+            }
+        })
     },
 
     getSummonerRanks: (summonerId) => {

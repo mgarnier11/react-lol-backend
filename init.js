@@ -16,6 +16,8 @@ function init() {
         length: (value, key) => 1,
     })
 
+    global.cache = lruCache;
+
     config.kaynConfig.cacheOptions = {
         cache: lruCache,
         timeToLives: {

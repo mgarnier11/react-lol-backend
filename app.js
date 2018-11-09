@@ -11,6 +11,7 @@ var startup = require('./startupDDragon');
 
 console.time('startup');
 
+
 init();
 
 const key = (process.env.LEAGUE_API_KEY ? process.env.LEAGUE_API_KEY : '1234');

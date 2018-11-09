@@ -8,6 +8,7 @@ var matchService = require('../services/MatchService');
 
 var toArabic = require('roman-numerals').toArabic;
 
+
 function SummonerSocketController(socket) {
     socket.on('getSummonerById', async (summonerId) => {
         try {
@@ -150,15 +151,22 @@ function SummonerSocketController(socket) {
         if (socket.summoners.length > 0) {
             var summoner = socket.summoners[0];
             console.log('getting stats for ' + summoner.id);
-
+            var percent = 0;
             for (var queue of config.mainQueues) {
                 query.queue = queue.id;
                 query.champion = summoner.championId;
                 try {
-                    matchList = await matchService.findSummonerMatchList(summoner.accountId, query);
+                    matchList = await summonerService.findMatchList(summoner.id, query);
+                    //matchList = await matchService.findSummonerMatchList(summoner.accountId, query);
 
                     if (matchList.matches.length > 0) {
-                        var data = await summonerService.findSummonerStatsInMatches(summoner.id, matchList.matches);
+                        var data = await summonerService.findSummonerStatsInMatches(summoner.id, matchList.matches)
+                            .progress(tmp => {
+                                percent = config.mainQueues.indexOf(queue) * 33 + tmp * 33 / 100;
+                                socket.emit('returnSummonerLoading', { summonerId: summoner.id, loading: percent });
+                            })
+
+                        //var data = await summonerService.findSummonerStatsInMatches(summoner.id, matchList.matches);
                         summoner[queue.id] = data.stats;
                         summoner[queue.id].matchList = matchList.matches;
                         allMatches.push.apply(allMatches, data.matchDatas);
@@ -166,6 +174,10 @@ function SummonerSocketController(socket) {
                 } catch (error) {
                     console.log(error);
                 }
+                percent = config.mainQueues.indexOf(queue) * 33;
+                socket.emit('returnSummonerLoading', { summonerId: summoner.id, loading: percent });
+
+
             }
 
             summoner.kda = summonerService.calculateKda(allMatches, summoner.id);

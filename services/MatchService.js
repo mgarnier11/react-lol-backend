@@ -62,7 +62,9 @@ var MatchService = {
                 var result = await kayn.Matchlist.by.accountID(accountId).query(query);
                 resolve(result);
             } catch (error) {
-                reject(error);
+                console.log(error);
+                //reject(error);
+                resolve({ matches: [], startIndex: 0, endIndex: 0, totalGames: 0 });
             }
         });
     },
