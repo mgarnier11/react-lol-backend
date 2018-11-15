@@ -293,13 +293,13 @@ function loadIcons(callback) {
 
 function startupDDragon(callback) {
     return new Promise(async (resolve) => {
+        loadIcons();
         await Promise.all([
             loadChampions(),
             loadQueues(),
             loadMaps(),
             loadSummonerSpells(),
-            loadRunes(),
-            loadIcons()
+            loadRunes()
         ]).then(values => {
             values.forEach(value => console.log(value));
         });
